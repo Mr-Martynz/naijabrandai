@@ -19,7 +19,7 @@ Instead of one AI call doing everything, this is built as an agent with separate
 - [x] Project environment set up (venv, requirements.txt)
 - [x] Tool 1: color extractor — takes an image, returns dominant color + palette as hex codes
 - [x] Tool 2: hashtag lookup — curated list grouped by category (general, event, buyer-intent, brand-style, location)
-- [ ] Vision model wired up (starting with free Hugging Face models, swapping to a paid API later for real vendors)
+- [x] Vision model wired up (starting with free Hugging Face models, swapping to a paid API later for real vendors)
 - [ ] Agent built with smolagents to tie tools together
 - [ ] Local end-to-end test
 - [ ] WhatsApp integration (Meta Cloud API)
