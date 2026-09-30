@@ -6,7 +6,8 @@ HASHTAGS = {
     "event": ["#OwambeReady", "#DettyDecember", "#OwambeSeason", "#WeddingSeasonNG"],
     "buyer_intent": ["#PerfumeForSale", "#AffordablePerfume", "#PerfumeDeals", "#BuyPerfumeOnline"],
     "brand_style": ["#ArabianPerfume", "#LattafaNigeria", "#ArmafPerfume", "#UnisexFragrance"],
-    "location": ["#LagosBusiness", "#AbujaFragrance", "#NigerianSmallBusiness"],
+    "location": ["#LagosBusiness", "#AbujaFragrance", "#NigerianSmallBusiness", "#LagosPerfumeVendor", "#AbujaPerfumeStore", "#PortHarcourtPerfume", "#LekkiPerfumePlug", "#PerfumeInNigeria"],
+    "business_focused": ["#NaijaBusiness", "#NaijaPerfumePlug", "#PerfumeVendorsInNigeria", "#AffordableLuxuryNigeria", "#LagosBigBoys"]
 }
 
 def get_hashtags(categories=None, limit=15):
