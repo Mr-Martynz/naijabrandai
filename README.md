@@ -24,7 +24,7 @@ Instead of one AI call doing everything, this is built as an agent with separate
 - [x] Agent built with smolagents to tie tools together
 - [x] Flyer layout recommendation — rules-based layout/CTA + AI-generated catchy headline (sells feeling, not product facts)
 - [x] Best time to post — rules-based (no AI needed), accounts for weekday/weekend and Detty December/wedding season
-- [ ] Local end-to-end test
+- [x] Local end-to-end test — full package (captions, hashtags, colors, flyer, posting time) generated from one photo in a single run
 - [ ] WhatsApp integration (Meta Cloud API)
 - [ ] Vendor tracking + Paystack payment gate
 
