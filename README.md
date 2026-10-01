@@ -22,6 +22,8 @@ Instead of one AI call doing everything, this is built as an agent with separate
 - [x] Vision model wired up (starting with free Hugging Face models, swapping to a paid API later for real vendors)
 - [x] Caption generator working — combines colors + hashtags + vision description into full vendor package (captions, hashtags, palette)
 - [x] Agent built with smolagents to tie tools together
+- [x] Flyer layout recommendation — rules-based layout/CTA + AI-generated catchy headline (sells feeling, not product facts)
+- [x] Best time to post — rules-based (no AI needed), accounts for weekday/weekend and Detty December/wedding season
 - [ ] Local end-to-end test
 - [ ] WhatsApp integration (Meta Cloud API)
 - [ ] Vendor tracking + Paystack payment gate
