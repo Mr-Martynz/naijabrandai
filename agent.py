@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from smolagents import tool, ToolCallingAgent, InferenceClientModel
 
 from color_extractor import get_colors
@@ -37,8 +39,6 @@ def describe_photo(image_path: str) -> str:
     """
     return describe_image(image_path)
 
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 hf_token = os.getenv("HF_TOKEN")
@@ -54,16 +54,12 @@ agent = ToolCallingAgent(
     model=model,
 )
 
+
 if __name__ == "__main__":
+    # Simple standalone test of just the agent + its 3 tools.
+    # The full package (adding flyer + posting time) lives in build_package.py
     result = agent.run(
-        "You are creating a social media package for a Nigerian perfume vendor. "
-        "Look at the product photo at 'test.jpg'. Use your tools to get its dominant colors, "
-        "a factual description, and relevant hashtags.\n\n"
-        "Then write 3 short Instagram/TikTok captions in natural Nigerian English. "
-        "Each caption must reference a specific real detail from the photo description "
-        "(like the exact product name, bottle color, or packaging design) — do not write "
-        "generic lines. Use Nigerian phrases like 'Owambe', 'Detty December', 'smell good', "
-        "'you go love am' naturally, spread across the captions, not forced into every line.\n\n"
-        "Give me a final answer with: the 3 captions, the hashtags, and the color palette."
+        "Look at the product photo at 'test.jpg'. Use your tools to get its colors, "
+        "a description, and relevant hashtags. Give me a final answer with all three, clearly labeled."
     )
     print(result)

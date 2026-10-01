@@ -2,7 +2,7 @@
 # This is a starting list — expand it over time as you learn what real vendors use.
 
 HASHTAGS = {
-    "general": ["#PerfumeNigeria", "#NigerianPerfume", "#PerfumesInLagos", "#SmellGood", "#FragranceLovers"],
+    "general": ["#PerfumeNigeria", "#PerfumesInLagos", "#SmellGood", "#FragranceLovers"],
     "event": ["#OwambeReady", "#DettyDecember", "#OwambeSeason", "#WeddingSeasonNG"],
     "buyer_intent": ["#PerfumeForSale", "#AffordablePerfume", "#PerfumeDeals", "#BuyPerfumeOnline"],
     "brand_style": ["#ArabianPerfume", "#LattafaNigeria", "#ArmafPerfume", "#UnisexFragrance"],
