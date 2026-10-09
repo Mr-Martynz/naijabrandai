@@ -5,6 +5,7 @@ from smolagents import tool, ToolCallingAgent, InferenceClientModel
 from color_extractor import get_colors
 from hashtag_lookup import get_hashtags
 from vision_tool import describe_image
+from rag_tools import search_catalog, find_similar_caption
 
 
 @tool
@@ -50,13 +51,19 @@ model = InferenceClientModel(
 )
 
 agent = ToolCallingAgent(
-    tools=[extract_colors, lookup_hashtags, describe_photo],
+    tools=[
+        extract_colors,
+        lookup_hashtags,
+        describe_photo,
+        search_catalog,
+        find_similar_caption,
+    ],
     model=model,
 )
 
 
 if __name__ == "__main__":
-    # Simple standalone test of just the agent + its 3 tools.
+    # Simple standalone test of just the agent + its tools.
     # The full package (adding flyer + posting time) lives in build_package.py
     result = agent.run(
         "Look at the product photo at 'test.jpg'. Use your tools to get its colors, "
