@@ -4,8 +4,11 @@ from fastapi import FastAPI, Request, BackgroundTasks
 from dotenv import load_dotenv
 
 from build_package import build_package
+from db import init_db
+from router import route_message, NEW_PRODUCT_PHOTO
 
 load_dotenv()
+init_db()  # creates the database tables the first time
 
 app = FastAPI()
 
@@ -20,7 +23,7 @@ processed_ids = set()
 
 
 def send_text(to, text):
-    """Send a plain WhatsApp text message to a vendor."""
+    """Send a plain WhatsApp text message."""
     url = f"{GRAPH_URL}/{PHONE_NUMBER_ID}/messages"
     headers = {"Authorization": f"Bearer {WHATSAPP_TOKEN}"}
     payload = {
@@ -47,26 +50,45 @@ def download_image(media_id):
     return path
 
 
+def handle_vendor_message(message, vendor, intent):
+    """Vendor side: the existing content pipeline, now only for new product photos."""
+    sender = message["from"]
+
+    if intent == NEW_PRODUCT_PHOTO:
+        send_text(sender, "Got your photo! Give me a minute to work on it...")
+        path = download_image(message["image"]["id"])
+        print("Saved photo to:", path)
+
+        sections = build_package(path)
+        if sections is None:
+            send_text(sender, "Sorry, my AI helper is busy right now. Please send your photo again in a few minutes.")
+        else:
+            for section in sections:
+                send_text(sender, section)
+    else:
+        send_text(sender, f"Hi {vendor['business_name']}! Send me a photo of your perfume bottle and I'll create your captions, hashtags and flyer tips.")
+
+
+def handle_customer_message(message, intent):
+    """Customer side: placeholder until the customer agent is built."""
+    print(f"Customer message from {message['from']} (intent: {intent}) - customer agent not built yet")
+    send_text(message["from"], "Hi! This number is still being set up for orders. Please check back soon.")
+
+
 def handle_message(message):
     """Runs in the background, AFTER Meta has already got its 200 OK."""
     sender = message["from"]
     try:
-        if message["type"] == "image":
-            send_text(sender, "Got your photo! Give me a minute to work on it...")
-            path = download_image(message["image"]["id"])
-            print("Saved photo to:", path)
+        route = route_message(message)
+        print(f"Router: role={route['role']} intent={route['intent']}")
 
-            sections = build_package(path)
-            if sections is None:
-                send_text(sender, "Sorry, my AI helper is busy right now. Please send your photo again in a few minutes.")
-            else:
-                for section in sections:
-                    send_text(sender, section)
+        if route["role"] == "vendor":
+            handle_vendor_message(message, route["vendor"], route["intent"])
         else:
-            send_text(sender, "Hi! Send me a photo of your perfume bottle and I'll create your captions, hashtags and flyer tips.")
+            handle_customer_message(message, route["intent"])
     except Exception as e:
         print("Error handling message:", e)
-        send_text(sender, "Sorry, something went wrong. Please try sending your photo again.")
+        send_text(sender, "Sorry, something went wrong. Please try again.")
 
 
 @app.get("/webhook")
