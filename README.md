@@ -25,7 +25,11 @@ Instead of one AI call doing everything, this is built as an agent with separate
 - [x] Flyer layout recommendation — rules-based layout/CTA + AI-generated catchy headline (sells feeling, not product facts)
 - [x] Best time to post — rules-based (no AI needed), accounts for weekday/weekend and Detty December/wedding season
 - [x] Local end-to-end test — full package (captions, hashtags, colors, flyer, posting time) generated from one photo in a single run
-- [x] WhatsApp webhook connected and verified — Meta Cloud API test events confirmed reaching FastAPI server via ngrok tunnel (real phone messages blocked until app is published — expected Meta behavior, not a bug)
+- [x] Webhook replies "200 OK" instantly and does the slow AI work in the background; duplicate resends from Meta are ignored
+- [x] Bot replies to vendors on WhatsApp and downloads the photos they send
+- [x] Full pipeline wired into the WhatsApp handler via build_package(image_path)
+- [ ] Replace the Hugging Face model (free credits ran out) with a reliable alternative
+- [ ] Stop retrying on errors that retrying can't fix (e.g. 402 billing errors)
 - [ ] Deploy server permanently (replace ngrok/local machine with Render/Railway)
 - [ ] Download incoming photo + call build_package.py from webhook, reply with results
 - [ ] Vendor tracking + Paystack payment gate
