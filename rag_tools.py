@@ -10,7 +10,7 @@ def search_catalog(query: str, vendor_id: int) -> str:
     about a product, price or availability. Never answer those from memory.
 
     Args:
-        query: What the person is asking about, in plain words (for example "smoky perfume for men").
+        query: What the person is asking about, rewritten in plain English (translate Nigerian Pidgin or any other language first), for example "sweet vanilla scent that lasts long".
         vendor_id: The numeric ID of the vendor whose catalog to search.
     """
     return search_catalog_text(query, vendor_id)

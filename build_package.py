@@ -4,6 +4,7 @@ from flyer_recommender import recommend_flyer
 from posting_time import recommend_posting_time
 from color_extractor import get_colors
 from vision_tool import describe_image
+from llm_client import is_retryable
 
 
 def build_package(image_path):
@@ -12,7 +13,8 @@ def build_package(image_path):
     Returns a list of text sections (captions, flyer, timing), or None if the AI failed.
     """
     # Step 1: let the agent gather colors, description, and hashtags, then write captions.
-    # Retry loop since free-tier providers occasionally hit capacity limits.
+    # Retry only on temporary errors (429 slow down, 5xx server trouble, network hiccups).
+    # Billing, bad key and forbidden errors would fail again, so we stop straight away.
     caption_result = None
     for attempt in range(3):
         try:
@@ -29,9 +31,13 @@ def build_package(image_path):
             break
         except Exception as e:
             print(f"Attempt {attempt + 1} failed: {e}")
+            if not is_retryable(e):
+                print("This error would fail again, so I'm not retrying.")
+                break
             if attempt < 2:
-                print("Retrying in 10 seconds...")
-                time.sleep(10)
+                delay = 5 * 2 ** attempt  # 5 seconds, then 10
+                print(f"Temporary error. Retrying in {delay} seconds...")
+                time.sleep(delay)
 
     if caption_result is None:
         return None
@@ -59,6 +65,6 @@ def build_package(image_path):
 if __name__ == "__main__":
     sections = build_package("test.jpg")
     if sections is None:
-        print("All attempts failed. Try running again in a few minutes.")
+        print("The AI step failed. See the messages above for why.")
     else:
         print("\n\n".join(sections))

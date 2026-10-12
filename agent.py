@@ -1,11 +1,11 @@
-import os
 from dotenv import load_dotenv
-from smolagents import tool, ToolCallingAgent, InferenceClientModel
+from smolagents import tool, ToolCallingAgent, OpenAIModel
 
 from color_extractor import get_colors
 from hashtag_lookup import get_hashtags
 from vision_tool import describe_image
 from rag_tools import search_catalog, find_similar_caption
+from llm_client import BASE_URL, GEMINI_API_KEY, get_model_name
 
 
 @tool
@@ -42,12 +42,11 @@ def describe_photo(image_path: str) -> str:
 
 
 load_dotenv()
-hf_token = os.getenv("HF_TOKEN")
 
-model = InferenceClientModel(
-    model_id="Qwen/Qwen3-VL-8B-Instruct",
-    provider="featherless-ai",
-    token=hf_token,
+model = OpenAIModel(
+    model_id=get_model_name(),
+    api_base=BASE_URL,
+    api_key=GEMINI_API_KEY,
 )
 
 agent = ToolCallingAgent(
@@ -63,8 +62,6 @@ agent = ToolCallingAgent(
 
 
 if __name__ == "__main__":
-    # Simple standalone test of just the agent + its tools.
-    # The full package (adding flyer + posting time) lives in build_package.py
     result = agent.run(
         "Look at the product photo at 'test.jpg'. Use your tools to get its colors, "
         "a description, and relevant hashtags. Give me a final answer with all three, clearly labeled."

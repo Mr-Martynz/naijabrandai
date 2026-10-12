@@ -1,15 +1,8 @@
-import os
-import base64
-from dotenv import load_dotenv
-from huggingface_hub import InferenceClient
-
 from color_extractor import get_colors
 from hashtag_lookup import get_hashtags
+from llm_client import chat
 from vision_tool import describe_image
 
-load_dotenv()
-hf_token = os.getenv("HF_TOKEN")
-client = InferenceClient(api_key=hf_token, provider="featherless-ai")
 
 def generate_package(image_path):
     # Gather real data from our three tools
@@ -24,12 +17,7 @@ Dominant colors: {colors['dominant_hex']} (palette: {', '.join(colors['palette_h
 
 Write 3 short Instagram/TikTok captions in natural Nigerian English for this product. Use authentic Nigerian phrases naturally (like "Owambe," "Detty December," "you go love it," "smell good") — don't force all of them into every caption. Number them 1-3."""
 
-    completion = client.chat_completion(
-        model="Qwen/Qwen3-VL-8B-Instruct",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=300,
-    )
-    captions = completion.choices[0].message.content
+    captions = chat([{"role": "user", "content": prompt}], max_tokens=1024)
 
     return {
         "description": description,
@@ -37,6 +25,7 @@ Write 3 short Instagram/TikTok captions in natural Nigerian English for this pro
         "hashtags": hashtags,
         "captions": captions,
     }
+
 
 if __name__ == "__main__":
     result = generate_package("test.jpg")

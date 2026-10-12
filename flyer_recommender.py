@@ -1,10 +1,4 @@
-import os
-from dotenv import load_dotenv
-from huggingface_hub import InferenceClient
-
-load_dotenv()
-hf_token = os.getenv("HF_TOKEN")
-client = InferenceClient(api_key=hf_token, provider="featherless-ai")
+from llm_client import chat
 
 
 def generate_headline(description: str) -> str:
@@ -25,12 +19,12 @@ Examples of the WRONG style (too literal): "Black Gold Perfume Bottle", "100ml E
 
 Return ONLY the headline, nothing else."""
 
-    completion = client.chat_completion(
-        model="Qwen/Qwen3-VL-8B-Instruct",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=20,
-    )
-    return completion.choices[0].message.content.strip()
+    # The headline is kept short by the prompt. max_tokens is generous because some Gemini
+    # models spend part of the limit thinking, and a tiny limit can return an empty answer.
+    text = chat([{"role": "user", "content": prompt}], max_tokens=200)
+
+    # Keep only the first line and remove any quote marks the model wrapped around it
+    return text.splitlines()[0].strip().strip("\"'“”‘’")
 
 
 def recommend_flyer(colors: dict, description: str) -> dict:
