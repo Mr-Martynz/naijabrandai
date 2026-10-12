@@ -4,10 +4,13 @@ from smolagents import tool, ToolCallingAgent, OpenAIModel
 from color_extractor import get_colors
 from hashtag_lookup import get_hashtags
 from vision_tool import describe_image
-from rag_tools import search_catalog, find_similar_caption
+from rag_tools import find_similar_caption
 from llm_client import BASE_URL, GEMINI_API_KEY, get_model_name
 
 
+# These three tools are kept so the agent CAN fetch the facts itself if we ever want it to.
+# Today build_package.py fetches them in plain code (always needed, no judgment required),
+# so they are not registered below. That saves several paid round trips per photo.
 @tool
 def extract_colors(image_path: str) -> dict:
     """
@@ -49,21 +52,19 @@ model = OpenAIModel(
     api_key=GEMINI_API_KEY,
 )
 
+# The caption agent's real job: look up past captions for style, then write the new ones.
+# max_steps stops a confused run from looping, since every step is a paid model call.
 agent = ToolCallingAgent(
-    tools=[
-        extract_colors,
-        lookup_hashtags,
-        describe_photo,
-        search_catalog,
-        find_similar_caption,
-    ],
+    tools=[find_similar_caption],
     model=model,
+    max_steps=4,
 )
 
 
 if __name__ == "__main__":
     result = agent.run(
-        "Look at the product photo at 'test.jpg'. Use your tools to get its colors, "
-        "a description, and relevant hashtags. Give me a final answer with all three, clearly labeled."
+        "A bottle of perfume in black and gold packaging with a lion emblem. "
+        "Call find_similar_caption once with that description, then write 2 short captions in "
+        "Nigerian English that match the style of the past captions."
     )
     print(result)
